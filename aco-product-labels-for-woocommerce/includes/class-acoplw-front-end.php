@@ -126,6 +126,9 @@ class ACOPLW_Front_End
             // Woocmmerce Block Support
             add_filter( "woocommerce_blocks_product_grid_item_html", array ( $this, "acoplwBadgeWCBlock" ), 10, 3);
 
+            //Elementor block listing
+            add_filter( 'elementor/widget/render_content', array( $this, 'acoplw_elementor_widget_content'), 10, 2 );
+
             /* WooBuilder Support
             * @ver 3.1.4
             */
@@ -210,7 +213,6 @@ class ACOPLW_Front_End
 
     }
 
-    
     public function acoplwBadgeElem ()
     { 
 
@@ -225,6 +227,25 @@ class ACOPLW_Front_End
         }
 
     }
+
+    /*
+    * Elentor block listing fix 
+    * @ver 3.2.11
+    */
+
+    public function acoplw_elementor_widget_content( $widget_content, $block ) {
+    
+        global $product;
+
+        if ( $product && is_object( $product ) && method_exists( $product, 'get_id' ) ) {
+            if ($block->get_name() == 'theme-post-featured-image' ){
+                $this->badge->acoplwBadgeElem();
+            }
+        }
+        
+        return $widget_content;
+    }
+
     /**
     * ACOPLW Badges Detail
     * @param $productThumb, $product
