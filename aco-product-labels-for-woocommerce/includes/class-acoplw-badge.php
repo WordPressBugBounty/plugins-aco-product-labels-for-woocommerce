@@ -27,6 +27,7 @@ class ACOPLW_Badge
     public $customStyles = [];
     public $acoplwBadges = [];
     public $pScheduleStatus = [];
+    public $productvariations = [];
     private $_active = false;
     private $active_badges = false;
 

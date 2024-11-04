@@ -551,7 +551,7 @@ class ACOPLW_Api
         if (isset($data['id'])) {
 
             $result             = array();   
-            $badge_ID           = $data['id'];
+            $badge_ID           = intval($data['id']);
             $label_options      = get_post_meta($badge_ID, 'badge_label_options', true);
             $style_options      = get_post_meta($badge_ID, 'badge_style_options', true);
             $position_options   = get_post_meta($badge_ID, 'badge_position_options', true);
@@ -607,20 +607,22 @@ class ACOPLW_Api
                         if ( is_array ( $val ) && $val['rule']['value'] ) {
                             if ( $val['rule']['item'] == 'product_selection') {
                                 if ( $pr_cnt != 1 ) $prodvalues .= ',';
-                                $prodvalues .= implode ( ',', $val['rule']['value'] ); 
+                                // $prodvalues .= implode ( ',', $val['rule']['value'] );
+                                $prodvalues .= implode(',', array_map('intval', $val['rule']['value']));
                                 $pr_cnt++;
                             } else {
                                 if ( $tx_cnt != 1 ) $taxvalues .= ',';
-                                $taxvalues .= implode ( ',', $val['rule']['value'] ); 
+                                // $taxvalues .= implode ( ',', $val['rule']['value'] );
+                                $taxvalues .= implode(',', array_map('intval', $val['rule']['value']));
                                 $tx_cnt++;
                             }
                         }
                     } 
                     if( $taxvalues != '' ) { 
-                        $defaultTax = $wpdb->get_results ( "SELECT DISTINCT cat.term_id as value, cat.name as label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.term_id IN (" . $taxvalues . ")" ); 
+                        $defaultTax = $wpdb->get_results ( $wpdb->prepare( "SELECT DISTINCT cat.term_id as value, cat.name as label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.term_id IN (" . $taxvalues . ")" ) );
                     } 
                     if( $prodvalues != '' ) { 
-                        $defaultProducts = $wpdb->get_results ( "SELECT DISTINCT ID as value, post_title as label FROM {$wpdb->prefix}posts WHERE ID IN (" . $prodvalues . ")" ); 
+                        $defaultProducts = $wpdb->get_results ( $wpdb->prepare( "SELECT DISTINCT ID as value, post_title as label FROM {$wpdb->prefix}posts WHERE ID IN (" . $prodvalues . ")" ) );
                     } 
                 }
             }
@@ -769,10 +771,11 @@ class ACOPLW_Api
         if (isset($data['id'])) {
             global $wpdb;
             $result                 = array();
-            $list_item              = get_post($data['id']);
-            $result['list_name']    = $list_item->post_title;
+            $post_id                = intval($data['id']);
+            $list_item              = get_post($post_id);
+            $result['list_name']    = sanitize_text_field($list_item->post_title);
             $result['list_id']      = $list_item->ID;
-            $result['list_type']    = get_post_meta($list_item->ID, 'list_type', true);
+            $result['list_type']    = sanitize_text_field(get_post_meta($list_item->ID, 'list_type', true));
             $other_config           = get_post_meta($list_item->ID, 'product_list_config', true);
 
             $rules = $other_config['rules']; $tax = []; $values = ''; $ar_cnt = 1;
@@ -781,12 +784,13 @@ class ACOPLW_Api
                     foreach ( $rule['rules'] as $val ) { 
                         if ( is_array ( $val ) && $val['rule']['value'] ) {
                             if ( $ar_cnt != 1 ) $values .= ',';
-				            $values .= implode ( ',', $val['rule']['value'] ); 
+				            // $values .= implode ( ',', $val['rule']['value'] );
+                            $values .= implode(',', array_map('intval', $val['rule']['value']));
                         }
                         $ar_cnt++;
                     } 
                     if( $values != '' ) { 
-                        $tax = $wpdb->get_results ( "SELECT DISTINCT cat.term_id as value, cat.name as label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.term_id IN (" . $values . ")" ); 
+                        $tax = $wpdb->get_results ( $wpdb->prepare( "SELECT DISTINCT cat.term_id as value, cat.name as label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.term_id IN (" . $values . ")" ) ); 
                     }
                 }
 
@@ -795,12 +799,13 @@ class ACOPLW_Api
                 }
             }
 
-            $result['selectedProducts'] = ($other_config['selectedProducts']);
-            $result['productAuthor']    = ($other_config['productAuthor']);
-            $result['excludedProducts'] = ($other_config['excludedProducts']);
-            $result['taxRelation']      = ($other_config['taxRelation']);
+            $result['selectedProducts'] = $other_config['selectedProducts'] ?? [];
+            $result['productAuthor']    = sanitize_text_field($other_config['productAuthor'] ?? '');
+            $result['excludedProducts'] = $other_config['excludedProducts'] ?? [];
+            $result['taxRelation']      = $other_config['taxRelation'] ?? [];
             $result['rules']            = $other_config['rules'] ? ($other_config['rules']) : '';
-            $result['sku_search']       = array_key_exists ( 'sku_search', $other_config ) ? $other_config['sku_search'] : '';
+            // $result['sku_search']       = array_key_exists ( 'sku_search', $other_config ) ? $other_config['sku_search'] : '';
+            $result['sku_search'] = sanitize_text_field($other_config['sku_search'] ?? '');
             $defaultProducts            = array_merge ( is_array ( $result['excludedProducts'] ) ? $result['excludedProducts'] : [], is_array ( $result['selectedProducts'] ) ? $result['selectedProducts'] : [] ); 
             $result['defaultProducts']  = empty($defaultProducts) ? [] : $this->get_products($defaultProducts);  // used for product list suggestion dropdown
 
@@ -910,15 +915,15 @@ class ACOPLW_Api
     {
         global $wpdb;
         $params = $arg->get_params();
-        $search = $params['search'];
-
-        $results = $wpdb->get_results ( "SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts WHERE post_type in ( 'acoplw_pt_products' ) AND post_status = 'publish' AND ( post_title LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' ) GROUP BY ID, post_title" );
+        // $search = $params['search'];
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $results = $wpdb->get_results ( $wpdb->prepare( "SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts WHERE post_type in ( 'acoplw_pt_products' ) AND post_status = 'publish' AND ( post_title LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' ) GROUP BY ID, post_title" ) );
 
         foreach ( $results as $result ) { 
             // $result->value = (int)$result->value; 
             // $result->label = $result->label; 
             if ( $result->label === '' ) $result->label = 'Product List';
-            $result->value = 'list_'.$result->value; 
+            $result->value = 'list_'. intval($result->value); 
         } 
 
         return new WP_REST_Response($results, 200);
@@ -931,16 +936,18 @@ class ACOPLW_Api
     {
         global $wpdb;
         $params     = $arg->get_params();
-        $search     = $params['search'];
-        $skuSearch  = $params['sku_search'];
+        // $search     = $params['search'];
+        // $skuSearch  = $params['sku_search'];
+        $search     = isset($params['search']) ? sanitize_text_field($params['search']) : '';
+        $skuSearch  = isset($params['sku_search']) ? sanitize_text_field($params['sku_search']) : '';
 
         if ( $skuSearch ) {
 
-            $results    = $wpdb->get_results ( "SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts pt LEFT JOIN {$wpdb->prefix}postmeta pm ON pt.ID = pm.post_id WHERE pm.meta_key='_sku' AND pm.meta_value LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%'" );
+            $results    = $wpdb->get_results ( $wpdb->prepare("SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts pt LEFT JOIN {$wpdb->prefix}postmeta pm ON pt.ID = pm.post_id WHERE pm.meta_key='_sku' AND pm.meta_value LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%'" ));
 
         } else {
 
-            $results    = $wpdb->get_results ( "SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts WHERE post_type in ( 'product' ) AND post_status in ( 'publish', 'draft' ) AND ( post_title LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' ) GROUP BY ID, post_title" );
+            $results    = $wpdb->get_results ( $wpdb->prepare("SELECT post_title as label, ID as value, post_type as type FROM {$wpdb->prefix}posts WHERE post_type in ( 'product' ) AND post_status in ( 'publish', 'draft' ) AND ( post_title LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR post_title LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' ) GROUP BY ID, post_title" ));
 
         }
 
@@ -963,10 +970,10 @@ class ACOPLW_Api
     {
         global $wpdb;
         $params = $arg->get_params();
-        $search = $params['search'];
+        $search = isset($params['search']) ? sanitize_text_field($params['search']) : '';
         $tax = ( $params['tax'] == 'tag' ) ? 'product_tag' : 'product_cat';
 
-        $results = $wpdb->get_results ( "SELECT cat.term_id AS value, cat.name AS label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.taxonomy = '" . $tax . "' AND ( cat.name LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR cat.name LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR cat.name LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' )" );
+        $results = $wpdb->get_results ( $wpdb->prepare( "SELECT cat.term_id AS value, cat.name AS label FROM {$wpdb->prefix}terms cat LEFT JOIN {$wpdb->prefix}term_taxonomy cattax ON cat.term_id = cattax.term_id WHERE cattax.taxonomy = '" . $tax . "' AND ( cat.name LIKE '" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR cat.name LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "%' OR cat.name LIKE '%" . esc_sql ( $wpdb->esc_like ( $search ) ) . "' )" ));
 
         foreach ( $results as $result ) { 
             $result->value = (int)$result->value;
@@ -978,7 +985,8 @@ class ACOPLW_Api
     public function get_thumb($arg) {
 
         $params = $arg->get_params();
-        $id = $params['id'];
+        // $id = $params['id'];
+        $id = isset($params['id']) ? intval($params['id']) : 0;
         $result = [];
         $previewimage = plugin_dir_url(__FILE__). '../assets/images/preview-product.jpg';
         $thumb = get_the_post_thumbnail_url( $id, 'post-thumbnail' );
