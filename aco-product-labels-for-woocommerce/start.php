@@ -1,15 +1,15 @@
 <?php
 /*
  * Plugin Name: Acowebs Product Labels For Woocommerce
- * Version: 1.5.9
+ * Version: 1.5.10
  * Description: Product Labels For Woocommerce
  * Author: Acowebs
  * Author URI: http://acowebs.com
  * Requires at least: 4.9
- * Tested up to: 6.6
+ * Tested up to: 6.7
  * Text Domain: aco-product-labels-for-woocommerce
  * WC requires at least: 4.9
- * WC tested up to: 9.3
+ * WC tested up to: 9.4
  * Requires Plugins: woocommerce
  */
 
@@ -18,7 +18,7 @@ define('ACOPLW_PRODUCT_LIST', 'acoplw_prod_list');
 define('ACOPLW_DP_PRODUCT_LIST', 'awdp_pt_products'); // Dynamic Pricing Product List
 define('ACOPLW_PRODUCTS', 'product'); // WC Products
 define('ACOPLW_TOKEN', 'acoplw');
-define('ACOPLW_VERSION', '1.5.9');
+define('ACOPLW_VERSION', '1.5.10');
 define('ACOPLW_FILE', __FILE__);
 define('ACOPLW_URL', plugin_dir_url(__FILE__));
 define('ACOPLW_PLUGIN_NAME', 'Product Labels For Woocommerce');
