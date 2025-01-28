@@ -202,7 +202,8 @@ class ACOPLW_Badge
         } 
 
         // Return
-        echo $productThumb;
+        // echo $productThumb;
+        return $productThumb;
 
     }
 
@@ -1317,6 +1318,46 @@ class ACOPLW_Badge
         }
 
         return false;
+
+    }
+
+    /*
+     * Shortcode option to display badges.
+     * @ver 1.5.11
+     */
+
+    public function acoplwShortcode($atts) {
+
+         $atts = shortcode_atts(
+			[
+				'id' => 0,
+				'productid' => 0
+			],
+			$atts,
+			'acoplw_badge'
+		);
+        global $product;
+        
+        if ( ! $product ) {
+			return '';
+		}
+        $pro_Id = $product->get_id();
+        
+        if( 0 < absint( $atts['id'] ) ) {
+            
+            $this->load_badges();
+            $styles = ''; 
+            foreach ( $this->active_badges as $k => $badge ) { 
+                if($badge["id"] !== (int)$atts['id']){
+                    $styles .= "<style>.acoplw-custom-badge-" . $badge["id"] . " {display:none!important;}</style>";
+                }
+            }
+            return $styles . $this->acoplwBadgeElem();
+        } else if ( 0 < absint( $atts['productid'] ) && ( $pro_Id == (int)$atts['productid'] ) ) {
+            return $this->acoplwBadgeElem();
+        } else if( absint( $atts['productid'] == 0 && absint( $atts['id'] == 0))) {
+            return $this->acoplwBadgeElem();
+        }
 
     }
 

@@ -3,8 +3,8 @@
 } */
 .products .acoplw-badge{
     position: relative;
-    display: inline-block;
-    /* display: block; */
+    /* display: inline-block; */
+    display: block;
     /* pointer-events: none; */
 }
 .products .product{

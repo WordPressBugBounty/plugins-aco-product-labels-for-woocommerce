@@ -138,6 +138,7 @@ class ACOPLW_Front_End
 
             // Custom Hook
 			add_action( 'acoplwBadgeHook', array( $this, 'acoplwBadgeElem' ), 10 );
+            add_shortcode('acoplw_badge', array( $this, 'acoplwShortcode' ));
 
             $label_customHooks      = get_option('acoplw_customHooks') ? get_option('acoplw_customHooks') : [];
             $enableThmeifySupport   = array_key_exists ( 'enableThmeifySprt', $label_customHooks ) ? $label_customHooks['enableThmeifySprt'] : '';
@@ -222,10 +223,20 @@ class ACOPLW_Front_End
         */
         if ( ( !is_admin() || ( is_ajax() && is_admin() ) ) ) { 
 
-            $this->badge->acoplwBadgeElem();
+          echo $this->badge->acoplwBadgeElem();
 
         }
 
+    }
+
+    /*
+     * Shortcode option to display badges.
+     * @ver 1.5.11
+     */
+    public function acoplwShortcode($atts) {
+
+        return $this->badge->acoplwShortcode($atts);
+        
     }
 
     /*
