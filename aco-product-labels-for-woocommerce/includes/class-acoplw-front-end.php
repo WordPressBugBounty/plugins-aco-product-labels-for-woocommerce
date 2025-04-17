@@ -81,7 +81,7 @@ class ACOPLW_Front_End
             // add_filter( 'woocommerce_single_product_image_thumbnail_html', array( $this, 'acoplwBadge' ), 99, 2 );
 
             // Single Page Hook @ version 1.1.4
-            add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'acoplwTitleHookSingle' ), 9999 );
+            // add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'acoplwTitleHookSingle' ), 9999 );
 
             // Loop Hook (ELementor Listing Fix)
             $loop_hook  = get_option('acoplw_enable_loop_hook') ? get_option('acoplw_enable_loop_hook') : 0;  
