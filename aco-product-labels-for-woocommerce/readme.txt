@@ -1,12 +1,16 @@
-﻿=== Product Labels For Woocommerce (Sale Badges) ===
+=== Product Labels For Woocommerce (Sale Badges) ===
 Author: Acowebs
 Author URI: https://acowebs.com
 Contributors: acowebs
 Donate link:
-Tags: Product Labels For WooCommerce, WooCommerce Labels, WooCommerce Badges, WooCommerce Sale Badges, Badges, Sale Badges
+Tags: Product Labels For WooCommerce, WooCommerce Labels, WooCommerce Badges, WooCommerce Sale Badges, Badges
 Requires at least: 4.9
-Tested up to: 6.8
-Stable tag: 1.5.12
+Tested up to: 6.9
+Stable tag: 1.5.13
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Create custom product labels and sale badges for WooCommerce products to highlight offers and promotions.
 
 == Description ==
 WooCommerce Product labels (WooCommerce Sale Badges) helps to create product labels or product badges easily. This plugin provides an easy to use user interface to create custom product labels for woocommerce products. You can add labels to a set of selected products / categories or can replace default Woocommerce On Sale badges.
@@ -15,19 +19,19 @@ WooCommerce Product labels (WooCommerce Sale Badges) helps to create product lab
 
 == HOW TO ADD BADGES FOR WOOCOMMERCE PRODUCT LABELS? ==
 
-Once you activate the Product labels for WooCommerce Plugin, browse to the Badges menu located in the WordPress admin menu Bar. Choose Badges, add new Badge, and select the ‘Add New Badge’ button, to add badges using Acowebs Product labels for WooCommerce.
+Once you activate the Product labels for WooCommerce Plugin, browse to the Badges menu located in the WordPress admin menu Bar. Choose Badges, add new Badge, and select the ‘Add New Badge’ button, to add WooCommerce Sales badges using Acowebs Product labels for WooCommerce.
 
-== CHECK OUT OUR VIDEO DEMO ON HOW THIS WORKS: ==
+== CHECK OUT OUR VIDEO DEMO ON HOW THIS WooCommerce Sales Badges WORKS: ==
 
 [youtube https://www.youtube.com/watch?v=hRxXHYtGgBg]
 
-== BADGE PLUGIN FEATURES ==
+== WOOCOMMERCE SALES BADGES BADGE PLUGIN FEATURES ==
 
-WooCommerce labels let you grab the attention of the customers for the product. When you have a promotion or sale label on the top of the products, it sounds nice, however, the Product labels for the WooCommerce plugin take things to the next step. You can target specific product groups with set criteria assigned for every label.
+WooCommerce labels let you grab the attention of the customers for the product. When you have a promotion or sale label on the top of the products, it sounds nice; however, the Product labels for the WooCommerce plugin take things to the next step. You can target specific product groups with set criteria assigned for every label.
 
 Here are the features of the WooCommerce Product Label-Free version:
 
-✅ Can easily create / manage badges with our easy to use UI.
+✅ WooCommerce sales badges can easily create/manage badges with our easy-to-use UI.
 
 ✅ Option to customize badge color, font size, line height, width, opacity, position etc.
 
@@ -50,7 +54,7 @@ Here are the features of the WooCommerce Product Label-Free version:
 ✅ Option to show discount percenatge (sale / regular price difference) as Badge text.
 
 
-== DEMO - CHECK THIS OUT IN REAL ==
+== DEMO – CHECK WooCommerce product Badges OUT IN REAL ==
 
 Check how the Woocommerce Product labels are created!
 
@@ -59,11 +63,11 @@ Check how the Woocommerce Product labels are created!
 
 == PRO FEATURES ==
 
-The WooCommerce Product label plugin is built to win the attention of customers with the custom product labels. With product labels for WooCommerce, you can ensure that the free products are promoted, emphasize the exclusive discounts, free shipping, and other core features for the products you sell. 
+The WooCommerce Product label plugin is built to win the attention of customers with the custom product labels. With product labels for WooCommerce, you can ensure that the free products are promoted, emphasize the exclusive discounts, free shipping, and other core features for the products you sell.
 
 Here are the features of Woocommerce product labels Pro version:
 
-✅ All features on free version
+✅ All features on woocommerce product labels plugin free version
 
 ✅ 700+ predefined badges to choose from
 
@@ -98,7 +102,7 @@ Here are the features of Woocommerce product labels Pro version:
 
 ➡ <strong>[GET PREMIUM VERSION NOW!](https://acowebs.com/woocommerce-product-labels/) </strong>
 
-== PRO DEMO - CHECK THIS OUT IN REAL ==
+== PRO DEMO – CHECK Woocommerce Product badges OUT IN REAL ==
 
 Check how WooCommerce product label custom options are created!
 
@@ -158,6 +162,9 @@ Yes, with Acowebs product labels for the Woocommerce plugin, you can set multipl
 
 
 == Changelog ==
+= 1.5.13 =
+* Support for WordPress 6.9 and WooCommerce 10.4
+* [Bug Fix] : PHP error
 = 1.5.12 =
 * Support for WordPress 6.8 and WooCommerce 9.8
 * [Bug Fix] : PHP Warning

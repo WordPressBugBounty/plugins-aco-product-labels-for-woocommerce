@@ -141,6 +141,7 @@ class ACOPLW_Badge
     public function acoplwBadgeElem () {
 
         global $product;
+        if ( ! $product ) { return ''; }
         $productID      = $product->get_ID();
         $productThumb   = '';
 
