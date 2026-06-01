@@ -5,8 +5,8 @@ Contributors: acowebs
 Donate link:
 Tags: Product Labels For WooCommerce, WooCommerce Labels, WooCommerce Badges, WooCommerce Sale Badges, Badges
 Requires at least: 4.9
-Tested up to: 6.9
-Stable tag: 1.5.13
+Tested up to: 7.0
+Stable tag: 1.5.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,8 @@ Yes, with Acowebs product labels for the Woocommerce plugin, you can set multipl
 
 
 == Changelog ==
+= 1.5.14 =
+* Support for WordPress 7 and WooCommerce 10.8
 = 1.5.13 =
 * Support for WordPress 6.9 and WooCommerce 10.4
 * [Bug Fix] : PHP error

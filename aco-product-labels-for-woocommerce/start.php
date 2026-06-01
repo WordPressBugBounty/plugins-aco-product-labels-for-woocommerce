@@ -1,15 +1,15 @@
 <?php
 /*
  * Plugin Name: Acowebs Product Labels For Woocommerce
- * Version: 1.5.13
+ * Version: 1.5.14
  * Description: Product Labels For Woocommerce
  * Author: Acowebs
  * Author URI: http://acowebs.com
  * Requires at least: 4.9
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Text Domain: aco-product-labels-for-woocommerce
  * WC requires at least: 4.9
- * WC tested up to: 10.4
+ * WC tested up to: 10.8
  * Requires Plugins: woocommerce
  */
 
@@ -77,3 +77,4 @@ add_action( 'before_woocommerce_init', function() {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 	}
 } );
+

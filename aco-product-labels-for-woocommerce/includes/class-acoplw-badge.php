@@ -1273,14 +1273,14 @@ class ACOPLW_Badge
 
     public function customStyles()
     {
-
+        
         $styles = $this->customStyles;
         $wc_badge = get_option('acoplw_wc_badge_status');
         
         if ( $styles ) {
 
             $result = '<style>.products .acoplw-badge-icon{visibility:visible;} ';
-            $result .= $wc_badge ? '.onsale,.ast-onsale-card{display:none !important;} ' : '';
+            $result .= $wc_badge ? '.onsale,.ast-onsale-card,.wc-block-components-product-sale-badge{display:none !important;} ' : '';
             foreach ( $styles as $style ) {
                 $result = $result.$style;
             }
@@ -1290,7 +1290,7 @@ class ACOPLW_Badge
         } else if ( $wc_badge ) {
 
             $result = '<style>.products .acoplw-badge-icon{visibility:visible;} ';
-            $result .= $wc_badge ? '.onsale,.ast-onsale-card{display:none !important;} ' : '';
+            $result .= $wc_badge ? '.onsale,.ast-onsale-card,.wc-block-components-product-sale-badge{display:none !important;} ' : '';
             $result .= '</style>';
             echo $result;
 
