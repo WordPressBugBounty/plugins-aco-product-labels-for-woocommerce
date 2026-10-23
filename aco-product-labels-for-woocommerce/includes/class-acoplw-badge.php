@@ -380,12 +380,14 @@ class ACOPLW_Badge
                             // The active price min and max
                             $acoplw_sale_price 		= $product->get_variation_sale_price('max'); 
                             $acoplw_regular_price 	= $product->get_variation_regular_price('max'); 
+                            // $acoplw_sale_price 		= $product->get_variation_sale_price('min'); 
+                            // $acoplw_regular_price 	= $product->get_variation_regular_price('min'); 
                         } else {
                             $acoplw_sale_price 		= $product->get_sale_price();
                             $acoplw_regular_price 	= $product->get_regular_price();
                         }
                         if ( $acoplw_sale_price && $acoplw_regular_price ) {
-                            $acoplw_percentage = 100 - round ( ( $acoplw_sale_price / $acoplw_regular_price ) * 100 );
+                            $acoplw_percentage = 100 - round ( ( $acoplw_sale_price / $acoplw_regular_price ) * 100, wc_get_price_decimals() );
                             $saleperc = $acoplw_percentage.'%';
                         }
                     }
