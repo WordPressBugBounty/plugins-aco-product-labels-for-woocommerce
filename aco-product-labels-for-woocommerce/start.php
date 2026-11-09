@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Acowebs Product Labels For Woocommerce
- * Version: 1.5.16
+ * Version: 1.5.17
  * Description: Product Labels For Woocommerce
  * Author: Acowebs
  * Author URI: http://acowebs.com
@@ -18,7 +18,7 @@ define('ACOPLW_PRODUCT_LIST', 'acoplw_prod_list');
 define('ACOPLW_DP_PRODUCT_LIST', 'awdp_pt_products'); // Dynamic Pricing Product List
 define('ACOPLW_PRODUCTS', 'product'); // WC Products
 define('ACOPLW_TOKEN', 'acoplw');
-define('ACOPLW_VERSION', '1.5.16');
+define('ACOPLW_VERSION', '1.5.17');
 define('ACOPLW_FILE', __FILE__);
 define('ACOPLW_URL', plugin_dir_url(__FILE__));
 define('ACOPLW_PLUGIN_NAME', 'Product Labels For Woocommerce');
@@ -28,6 +28,43 @@ define('ACOPLW_PRODUCTS_SCHEDULE_TRANSIENT_KEY', 'acoplw_onsale_key');
 define('ACOPLW_STORE_URL', 'https://api.acowebs.com');
 
 define('ACOPLW_Wordpress_Version', get_bloginfo('version'));
+
+// ===== Paste into the MAIN plugin file, right after the plugin's own define() lines. =====
+// Acowebs Feedback API (deactivation feedback + newsletter opt-in).
+define('ACOPLW_FEEDBACK_PLUGIN', 'Product Labels For Woocommerce'); // Canonical name, same in Free and PRO.
+define('ACOPLW_EDITION', 'free');
+define('ACOPLW_SLUG', 'aco-product-labels-for-woocommerce'); // WordPress.org slug (the plugin's row data-slug on plugins.php).
+
+// The shared Acowebs classes need PHP 7.1+; on older PHP nothing is sent or shown.
+if (version_compare(PHP_VERSION, '7.1', '>=')) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-acowebs-feedback-client.php';
+    require_once plugin_dir_path(__FILE__) . 'includes/class-acowebs-feedback-optin.php';
+
+    // Newsletter notice: WP Dashboard only (no plugin pages listed).
+    Acowebs_Feedback_Optin::register(array(
+        'plugin'     => ACOPLW_FEEDBACK_PLUGIN,
+        'edition'    => ACOPLW_EDITION,
+        'list'       => 'product labels for woocommerce', // Acowebs panel list for this plugin's subscribers.
+        'slug'       => ACOPLW_SLUG,
+        'page_slugs' => array(),
+        'prefix'     => 'acoplw',
+        'kit_dir'    => plugin_dir_path(__FILE__) . 'assets/acowebs-ui-kit/',
+        'kit_url'    => plugin_dir_url(__FILE__) . 'assets/acowebs-ui-kit/',
+    ));
+
+    // Align the newsletter card with the other admin notices (same width and spacing). Outer box only:
+    // the wrapper and the kit card each add a 20px right margin, so the card ended short of the others.
+    add_action('admin_enqueue_scripts', function () {
+        if (wp_style_is('acowebs-feedback-ui', 'enqueued')) {
+            wp_add_inline_style(
+                'acowebs-feedback-ui',
+                '.notice.acowebs-optin-notice{margin:5px 0 15px !important}' .
+                '.acowebs-optin-notice > .acofb.acofb-notice{margin:0}'
+            );
+        }
+    }, 20);
+}
+
 
 if ( !function_exists('acoplw_init') ) {
 

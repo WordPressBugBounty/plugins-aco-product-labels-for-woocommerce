@@ -430,3 +430,8 @@
 .stm-product-item .acoplw-badge-icon{
     visibility: visible;
 }
+
+// Variable product {salepercentage}: show 'max' or 'min' discount percentage
+.acoplw-badge-icon.acoplw-var-hidden{
+    display: none !important;
+}

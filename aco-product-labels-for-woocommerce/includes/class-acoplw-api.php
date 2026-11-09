@@ -297,6 +297,9 @@ class ACOPLW_Api
             $badgeDetail        = $data['enableBadgeDetail'] ? $data['enableBadgeDetail'] : 0;
             $enableJquery       = $data['enableJquery'] ? $data['enableJquery'] : 0;
 
+            // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+            $varPercType        = ( isset ( $data['variation_percentage_type'] ) && $data['variation_percentage_type'] === 'min' ) ? 'min' : 'max';
+
             $enableThmeifySprt  = $data['enableThmeifySupport'] ? $data['enableThmeifySupport'] : 0;
             $themifyHooks       = $data['themifyHooks'] ? $data['themifyHooks'] : '';
 
@@ -350,6 +353,9 @@ class ACOPLW_Api
             else
                 update_option('acoplw_jquery_status', $enableJquery);
 
+            // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+            update_option('acoplw_variation_percentage_type', $varPercType);
+
             if ( false === get_option('acoplw_customHooks') )
                 add_option('acoplw_customHooks', $customHooks, '', 'yes');
             else
@@ -378,6 +384,9 @@ class ACOPLW_Api
         $result['enableBadgeDetail']    = ( false === get_option('acoplw_detail_page_badge') ) ? 1 : ( get_option('acoplw_detail_page_badge') ? get_option('acoplw_detail_page_badge') : 0 );
         $result['dp_plugin_active']     = function_exists('AWDP') ? true : false;
         $result['wrapperclass']         = get_option('acoplw_wrapper_class') ? get_option('acoplw_wrapper_class') : '';
+
+        // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+        $result['variation_percentage_type'] = ( get_option('acoplw_variation_percentage_type') === 'min' ) ? 'min' : 'max';
 
         $result['enableThmeifySupport'] = array_key_exists ( 'enableThmeifySprt', $label_customHooks ) ? $label_customHooks['enableThmeifySprt'] : '';
         $result['themifyHooks']         = array_key_exists ( 'themifyHooks', $label_customHooks ) ? $label_customHooks['themifyHooks'] : '';

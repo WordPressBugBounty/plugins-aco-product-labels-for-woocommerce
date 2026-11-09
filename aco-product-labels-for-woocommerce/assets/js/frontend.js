@@ -109,3 +109,54 @@ jQuery(window).on('load berocket_ajax_products_infinite_loaded',function () {
 	// }
 
 });
+
+// Variable product {salepercentage}: show 'max' or 'min' discount percentage
+jQuery(function ($) {
+
+	var decimals = ( typeof acoplw_frontend_object !== 'undefined' && acoplw_frontend_object.decimals !== undefined ) ? parseInt(acoplw_frontend_object.decimals, 10) : 2;
+	if ( isNaN(decimals) ) { decimals = 2; }
+
+	function acoplwRound(value, places) {
+		var factor = Math.pow(10, places);
+		return Math.round(value * factor) / factor;
+	}
+
+	function acoplwProductId($form) {
+		return $form.attr('data-product_id') || $form.find('input[name="product_id"]').val() || $form.find('[name="add-to-cart"]').val() || '';
+	}
+
+	// text: '' hides the badge (variation not on sale)
+	function acoplwSetPercentage($els, textFn) {
+		$els.each(function () {
+			var $el		= $(this);
+			var $badge	= $el.closest('.acoplw-badge-icon');
+			var text	= textFn($el);
+			if ( text ) {
+				$el.text(text);
+				$badge.removeClass('acoplw-var-hidden');
+			} else {
+				$badge.addClass('acoplw-var-hidden');
+			}
+		});
+	}
+
+	$(document).on('found_variation', 'form.variations_form', function (event, variation) {
+		var $els = $('.acoplw-salepercentage[data-product-id="' + acoplwProductId($(this)) + '"]');
+		if ( !$els.length || !variation ) { return; }
+
+		var regular	= parseFloat(variation.display_regular_price);
+		var price	= parseFloat(variation.display_price);
+		var text	= '';
+		if ( regular > 0 && price > 0 && price < regular ) {
+			text = parseFloat((100 - acoplwRound((price / regular) * 100, decimals)).toFixed(decimals)) + '%';
+		}
+		acoplwSetPercentage($els, function () { return text; });
+	});
+
+	$(document).on('reset_data hide_variation', 'form.variations_form', function () {
+		var $els = $('.acoplw-salepercentage[data-product-id="' + acoplwProductId($(this)) + '"]');
+		if ( !$els.length ) { return; }
+		acoplwSetPercentage($els, function ($el) { return $el.attr('data-default'); });
+	});
+
+});

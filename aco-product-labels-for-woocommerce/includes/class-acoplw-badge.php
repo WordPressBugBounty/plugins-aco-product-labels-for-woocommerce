@@ -288,6 +288,8 @@ class ACOPLW_Badge
             $wdpDiscLabel               = '';
             $dynmFlag                   = false;
 
+            $varPercProdID              = 0; // set when {salepercentage} is calculated for a variable product
+
             $badgeOptions               = $this->active_badges; 
             $badgeOptions               = $badgeOptions[$badgeID]; 
 
@@ -376,16 +378,32 @@ class ACOPLW_Badge
                 if ( ! is_object( $product) ) $product = wc_get_product( get_the_ID() ); 
                 if ( is_a ( $product, 'WC_Product' ) ) { 
                     if( $product->is_on_sale() && $checkSale ) {
-                        if ( $product->is_type( 'variable' ) ) { 
-                            // The active price min and max
-                            $acoplw_sale_price 		= $product->get_variation_sale_price('max'); 
-                            $acoplw_regular_price 	= $product->get_variation_regular_price('max'); 
-                            // $acoplw_sale_price 		= $product->get_variation_sale_price('min'); 
-                            // $acoplw_regular_price 	= $product->get_variation_regular_price('min'); 
+                        // if ( $product->is_type( 'variable' ) ) { 
+                        //     // The active price min and max
+                        //     $acoplw_sale_price 		= $product->get_variation_sale_price('max'); 
+                        //     $acoplw_regular_price 	= $product->get_variation_regular_price('max'); 
+                        // } else {
+                        //     $acoplw_sale_price 		= $product->get_sale_price();
+                        //     $acoplw_regular_price 	= $product->get_regular_price();
+                        // }
+
+                        // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+                        if ( $product instanceof WC_Product_Variable ) {
+                            $varPercType    = ( get_option('acoplw_variation_percentage_type') === 'min' ) ? 'min' : 'max';
+                            $varPerc        = $this->acoplwVariableSalePercentage ( $product, $varPercType );
+                            if ( $varPerc !== false ) {
+                                $saleperc           = $varPerc.'%';
+                                $varPercProdID      = $product->get_id();
+                            }
                         } else {
-                            $acoplw_sale_price 		= $product->get_sale_price();
-                            $acoplw_regular_price 	= $product->get_regular_price();
+                            $acoplw_sale_price      = $product->get_sale_price();
+                            $acoplw_regular_price   = $product->get_regular_price();
+                            if ( $acoplw_sale_price && $acoplw_regular_price ) {
+                                $acoplw_percentage = 100 - round ( ( $acoplw_sale_price / $acoplw_regular_price ) * 100, wc_get_price_decimals() );
+                                $saleperc = $acoplw_percentage.'%';
+                            }
                         }
+
                         if ( $acoplw_sale_price && $acoplw_regular_price ) {
                             $acoplw_percentage = 100 - round ( ( $acoplw_sale_price / $acoplw_regular_price ) * 100, wc_get_price_decimals() );
                             $saleperc = $acoplw_percentage.'%';
@@ -432,6 +450,15 @@ class ACOPLW_Badge
                 // WPML is active, register and translate the string
                 do_action('wpml_register_single_string', 'aco-product-labels-for-woocommerce', 'badge_label_'.$label, $label);
                 $label = apply_filters('wpml_translate_single_string', $label, 'aco-product-labels-for-woocommerce', 'badge_label_'.$label);
+            }
+
+            // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+            if ( $varPercProdID && $saleperc !== '' ) {
+                $percPos = strpos ( $label, $saleperc );
+                if ( $percPos !== false ) {
+                    $percSpan   = '<span class="acoplw-salepercentage" data-product-id="'.esc_attr ( $varPercProdID ).'" data-default="'.esc_attr ( $saleperc ).'">'.$saleperc.'</span>';
+                    $label      = substr_replace ( $label, $percSpan, $percPos, strlen ( $saleperc ) );
+                }
             }
 
             /*
@@ -982,6 +1009,32 @@ class ACOPLW_Badge
 
         }
 
+    }
+
+    // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+    public function acoplwVariableSalePercentage ( $product, $type = 'max' )
+    {
+        $prices = $product->get_variation_prices ( true );
+        if ( empty ( $prices['price'] ) || empty ( $prices['regular_price'] ) ) {
+            return false;
+        }
+
+        $decimals       = wc_get_price_decimals();
+        $percentages    = array();
+
+        foreach ( $prices['price'] as $variationID => $price ) {
+            $regular = isset ( $prices['regular_price'][$variationID] ) ? (float) $prices['regular_price'][$variationID] : 0;
+            $active  = (float) $price;
+            if ( $regular > 0 && $active > 0 && $active < $regular ) {
+                $percentages[] = 100 - round ( ( $active / $regular ) * 100, $decimals );
+            }
+        }
+
+        if ( empty ( $percentages ) ) {
+            return false;
+        }
+
+        return ( $type === 'min' ) ? min ( $percentages ) : max ( $percentages );
     }
 
     // Products On Sale

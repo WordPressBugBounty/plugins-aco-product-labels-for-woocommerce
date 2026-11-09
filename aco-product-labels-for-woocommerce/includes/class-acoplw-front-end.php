@@ -328,6 +328,10 @@ class ACOPLW_Front_End
 		wp_localize_script('acoplw-script', 'acoplw_frontend_object', 
             array(
                 'classname'     => get_option('acoplw_wrapper_class'),
+                
+                // Variable product {salepercentage}: show 'max' or 'min' discount percentage
+                'decimals'      => function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2,
+
                 'enablejquery'  => ( ( get_option('acoplw_jquery_status') && get_option('acoplw_enable_loop_hook') ) || get_option('acoplw_jquery_status') && get_option('acoplw_enable_shop_hook') ) ? 1 : 0,
             )
         );

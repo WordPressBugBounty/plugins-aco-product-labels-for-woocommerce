@@ -6,7 +6,7 @@ Donate link:
 Tags: Product Labels For WooCommerce, WooCommerce Labels, WooCommerce Badges, WooCommerce Sale Badges, Badges
 Requires at least: 4.9
 Tested up to: 7.1
-Stable tag: 1.5.16
+Stable tag: 1.5.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,8 @@ Yes, with Acowebs product labels for the Woocommerce plugin, you can set multipl
 
 
 == Changelog ==
+= 1.5.17 =
+* Dynamic Sales Percentage display for Variable products
 = 1.5.16 =
 * Support for  WooCommerce 11.2
 * Dynamic Sales Percentage Rounding Based on WooCommerce Decimals
